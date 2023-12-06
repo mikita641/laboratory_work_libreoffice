@@ -1,73 +1,76 @@
-option explicit
+Option Explicit
 
-Sub lab1Case1
-    const PROGRAM_NAME = "Лаб. роб. 1 - спосіб 1"
-    dim f as single, x as single, y as single, n as single, a as single, b as single
-    dim answer as string
-    dim HALF_PI as single
-    
-    x = inputBox("x = ", PROGRAM_NAME, 3.16e-3)
-    y = inputBox("y = ", PROGRAM_NAME, 4.7e1)
-    n = inputBox("n = ", PROGRAM_NAME, 4)
-    a = inputBox("a = ", PROGRAM_NAME, 2.6)
-    b = inputBox("b = ", PROGRAM_NAME, 7.8)
-    
-    HALF_PI = PI/2
-    
-    f = abs(sin(3*x + HALF_PI) + cos(3*x - 3*HALF_PI))
-    f = f / (sqr(abs(x^(n + 2))) - y*log(a * x + b)/log(10))
-    
-    answer = "f = " & format(f, "scientific")
-    msgBox answer, mb_IconInformation, PROGRAM_NAME
-End Sub
+Sub Main
+   Const PROGRAM_NAME = "Лаб. роб. Libre Basic 2"
+   
+   Const NUMBER_FORMAT = "0,000E+#"
+   Const ERR_MSG_PROGRAM_STOP = "Програма зупинена"
+   Const DEFAULT_X = 1
+   Const DEFAULT_A = 3
+   Const MSG_X = "Введіть дійсне число x"
+   Const MSG_A = "Введіть ціле число a від 1 до 3"
+   Const MIN_A = 1
+   Const MAX_A = 3
+   
+   dim callFunctionResult as Object
+   
+   Dim symbolEnter As String
+   Dim numberAsTextValue As String
+   Dim x As Single
+   Dim a As Single
+   Dim f As Single
+   Dim errMsg As String
+   Dim answer As String
+   
+   symbolEnter = Chr(13)
+   NumberAsTextValue = InputBox(MSG_A, PROGRAM_NAME, DEFAULT_A) 
+   
+   If Not IsNumeric(NumberAsTextValue) Then
+      errMsg = "Введене значення не є числовим" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
+      Exit Sub
+   End If
+   
+   a = cInt(NumberAsTextValue)
+   
+   If a < MIN_A Or a > MAX_A Then
+      errMsg = "Введене значення виходить за межі від 1 - 3" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
+      Exit Sub
+   End If
+   
+   NumberAsTextValue = InputBox(MSG_X, PROGRAM_NAME, DEFAULT_X) 
+   
+   If Not IsNumeric(NumberAsTextValue) Then
+      errMsg = "Введене значення не є числовим" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
+      Exit Sub
+   End If
+   
+   x = cSng(NumberAsTextValue)
+   
+   dim example1 as single
+   dim example2 as single
+   example1 = 2 * a
+   example2 = a / 3
+   
+   callFunctionResult = createUnoService("com.sun.star.sheet.FunctionAccess")
+   
+   If x >= example1 Then
+      f = callFunctionResult.callFunction("LOG", Array(x, a + 1))
+      f = f +  callFunctionResult.callFunction("LOG10", Array(x))
+   ElseIf example1 > x And x > example2 Then
+      f = callFunctionResult.callFunction("SIN", Array(x))
+      f = f / x
+      f = f + callFunctionResult.callFunction("TANH", Array(x))
+   ElseIf x = example2 Then
+      f = 1
+      f = f + callFunctionResult.callFunction("POWER", Array(a + 1))
+   ElseIf x < example2 Then
+      f = callFunctionResult.callFunction("SIN", Array(x + a * Pi))
+      f = f + 2
+   End If
 
-Sub lab1Case2
-    const PROGRAM_NAME = "Лаб. роб. 1 - спосіб 2"
-    dim x as single, y as single, n as single, a as single, b as single
-    dim f as single, f1 as single, f2 as single, f3 as single, f4 as single
-    dim f5 as single, f6 as single 
-    dim answer as string
-    dim HALF_PI as single
-    
-    x = inputBox("x = ", PROGRAM_NAME, 3.16e-3)
-    y = inputBox("y = ", PROGRAM_NAME, 4.7e1)
-    n = inputBox("n = ", PROGRAM_NAME, 4)
-    a = inputBox("a = ", PROGRAM_NAME, 2.6)
-    b = inputBox("b = ", PROGRAM_NAME, 7.8)
-
-    HALF_PI = PI/2    
-    
-    f6 = sin(3*x + HALF_PI)
-    f5 = cos(3*x - 3*HALF_PI)
-    f4 = sqr(abs(x^(n + 2)))
-    f3 = y*log(a * x + b)/log(10)
-    f2 = abs(f6 + f5)
-    f1 = f4 - f3
-    f = f2 / f1
-    
-    answer = "f = " & format(f, "scientific")
-    msgBox answer, mb_IconInformation, PROGRAM_NAME
-End Sub
-
-Sub lab1Case3
-    const PROGRAM_NAME = "Лаб. роб. 1 - спосіб 3"
-    dim f as single, x as single, y as single, n as single, a as single, b as single
-    dim answer as string
-    dim HALF_PI as single
-    
-    x = inputBox("x = ", PROGRAM_NAME, 3.16e-3)
-    y = inputBox("y = ", PROGRAM_NAME, 4.7e1)
-    n = inputBox("n = ", PROGRAM_NAME, 4)
-    a = inputBox("a = ", PROGRAM_NAME, 2.6)
-    b = inputBox("b = ", PROGRAM_NAME, 7.8)
-    
-    HALF_PI = PI/2
-    
-    f = sin(3*x + HALF_PI)
-    f = f + cos(3*x - 3*HALF_PI)
-    f = abs(f)
-    f = f / (sqr(abs(x^(n + 2))) - y*log(a * x + b)/log(10))
-    
-    answer = "f = " & format(f, "scientific")
-    msgBox answer, mb_IconInformation, PROGRAM_NAME
+   answer = "f=" & Format(f, "scientific")
+   msgBox answer, mb_IconInformation, PROGRAM_NAME
 End Sub
