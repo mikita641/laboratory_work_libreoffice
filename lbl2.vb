@@ -22,7 +22,7 @@ Sub Main
    Dim errMsg As String
    Dim answer As String
    
-   SymbolEnter = Chr(13)
+   symbolEnter = Chr(13)
    NumberAsTextValue = InputBox(MSG_A, PROGRAM_NAME, DEFAULT_A) 
    
    If Not IsNumeric(NumberAsTextValue) Then
