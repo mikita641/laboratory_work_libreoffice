@@ -12,6 +12,8 @@ Sub Main
    Const MIN_A = 1
    Const MAX_A = 3
    
+   dim callFunctionResult as Object
+   
    Dim symbolEnter As String
    Dim numberAsTextValue As String
    Dim x As Single
@@ -22,10 +24,9 @@ Sub Main
    
    SymbolEnter = Chr(13)
    NumberAsTextValue = InputBox(MSG_A, PROGRAM_NAME, DEFAULT_A) 
-   x = InputBox(MSG_X, PROGRAM_NAME, DEFAULT_X)
    
    If Not IsNumeric(NumberAsTextValue) Then
-      errMsg = "Введене значення некоректне" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      errMsg = "Введене значення не є числовим" & SymbolEnter & ERR_MSG_PROGRAM_STOP
       msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
       Exit Sub
    End If
@@ -33,19 +34,39 @@ Sub Main
    a = CSng(NumberAsTextValue)
    
    If a < MIN_A Or a > MAX_A Then
-      errMsg = "Введене значення некоректне" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      errMsg = "Введене значення виходить за межі від 1 - 3" & SymbolEnter & ERR_MSG_PROGRAM_STOP
       msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
       Exit Sub
    End If
    
-   If x >= 2 * a Then
-      f = Log(x) / Log(a + 1) + Log(x) / Log(10)
-   ElseIf 2 * a > x And x > a / 3 Then 
-      f = (Sin(x) / x) + Tanh(x)
-   ElseIf x = a / 3 Then
-      f = 1 + x ^ (a + 1)
-   ElseIf x < a / 3 Then
-      f = Sin(x + a * Pi) + 2
+   NumberAsTextValue = InputBox(MSG_X, PROGRAM_NAME, DEFAULT_X) 
+   
+   If Not IsNumeric(NumberAsTextValue) Then
+      errMsg = "Введене значення не є числовим" & SymbolEnter & ERR_MSG_PROGRAM_STOP
+      msgBox errMsg, mb_IconExclamation, PROGRAM_NAME
+      Exit Sub
+   End If
+   
+   dim example1 as single
+   dim example2 as single
+   example1 = 2 * a
+   example2 = a / 3
+   
+   callFunctionResult = createUnoService("com.sun.star.sheet.FunctionAccess")
+   
+   If x >= example1 Then
+      f = callFunctionResult.callFunction("LOG", Array(x + 1))
+      f = f /  callFunctionResult.callFunction("LOG10", Array(x))
+   ElseIf example1 > x And x > example2 Then
+      f = callFunctionResult.callFunction("SIN", Array(x))
+      f = f / x
+      f = f + callFunctionResult.callFunction("TAN", Array(x, ))
+   ElseIf x = example2 Then
+      f = 1
+      f = f + callFunctionResult.callFunction("POWER", Array(a + 1))
+   ElseIf x < example2 Then
+      f = callFunctionResult.callFunction("SIN", Array(x + a * Pi))
+      f = f + 2
    Else
       ' Add the appropriate action or default value for 'f' here
    End If
