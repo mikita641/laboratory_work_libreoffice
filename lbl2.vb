@@ -67,8 +67,6 @@ Sub Main
    ElseIf x < example2 Then
       f = callFunctionResult.callFunction("SIN", Array(x + a * Pi))
       f = f + 2
-   Else
-      ' Add the appropriate action or default value for 'f' here
    End If
 
    answer = "f=" & Format(f, "scientific")
